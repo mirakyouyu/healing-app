@@ -21,28 +21,24 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      background: #f5f5f0;
       height: 100vh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      color: white;
+      color: #333;
       touch-action: none;
       -webkit-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
-      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
 
-    .video-container {
-      width: calc(100% - 32px);
-      aspect-ratio: 16 / 9;
-      background: #000;
-      border-radius: 16px;
+    .video-section {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(135deg, #7dd3c0 0%, #4a9e8c 30%, #2d7a6d 60%, #a8d5ba 100%);
       overflow: hidden;
-      margin-top: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
 
     video {
@@ -51,35 +47,98 @@
       object-fit: cover;
     }
 
+    .message-bubble {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(50, 60, 55, 0.85);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.7;
+      text-align: center;
+      max-width: 280px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .message-bubble.visible {
+      opacity: 1;
+    }
+
+    .message-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 10px 10px 0;
+      border-style: solid;
+      border-color: rgba(50, 60, 55, 0.85) transparent transparent;
+    }
+
+    .timer-bar {
+      position: absolute;
+      bottom: 16px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .timer {
+      color: white;
+      font-size: 24px;
+      font-weight: 500;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .sound-btn {
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .sound-btn svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
+    }
+
+    .content-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: white;
+      padding: 24px 20px;
+    }
+
     .instruction {
-      margin-top: 20px;
-      font-size: 17px;
-      color: rgba(255, 255, 255, 0.7);
-      transition: all 0.3s ease;
-      letter-spacing: 0.5px;
+      font-size: 18px;
+      color: #d64545;
+      font-weight: 500;
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
     }
 
     .instruction.active {
-      color: #4ade80;
+      color: #4a9e8c;
     }
 
-    .healing-message {
-      margin-top: 16px;
-      font-size: 18px;
-      font-weight: 300;
+    .description {
+      font-size: 14px;
+      color: #666;
       text-align: center;
-      padding: 0 24px;
-      min-height: 54px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      line-height: 1.6;
-    }
-
-    .healing-message.visible {
-      opacity: 1;
+      line-height: 1.8;
+      margin-bottom: 20px;
     }
 
     .touch-area {
@@ -87,127 +146,155 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 50px;
+      gap: 24px;
       width: 100%;
+      background: #faf8f3;
+      border-radius: 20px;
       padding: 20px;
-      min-height: 200px;
     }
 
     .touch-circle {
-      width: 130px;
-      height: 130px;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 3px solid rgba(255, 255, 255, 0.25);
+      background: #faf8f3;
+      border: 2px solid #333;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
+      overflow: hidden;
       transition: all 0.2s ease;
-      position: relative;
     }
 
     .touch-circle.pressed {
-      background: rgba(74, 222, 128, 0.25);
-      border-color: #4ade80;
-      transform: scale(0.92);
-      box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+      background: rgba(74, 158, 140, 0.15);
+      border-color: #4a9e8c;
     }
 
-    .finger-icon {
-      width: 44px;
-      height: 66px;
-      opacity: 0.25;
+    .thumb-icon {
+      width: 80%;
+      height: 75%;
+      opacity: 0.6;
     }
 
-    .finger-icon svg {
-      width: 100%;
-      height: 100%;
-      fill: rgba(255, 255, 255, 0.6);
+    .touch-circle.pressed .thumb-icon {
+      opacity: 0.3;
     }
 
-    .touch-circle.pressed .finger-icon {
-      opacity: 0.1;
+    .footer {
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      background: white;
+    }
+
+    .healing-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(50, 60, 55, 0.85);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      line-height: 1.7;
+      text-align: center;
+      max-width: 280px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .healing-message.visible {
+      opacity: 1;
     }
 
     /* 小さい画面用 */
     @media (max-height: 700px) {
-      .video-container {
-        margin-top: 10px;
+      .video-section {
+        aspect-ratio: 16 / 8;
       }
-      .instruction {
-        margin-top: 14px;
-        font-size: 15px;
-      }
-      .healing-message {
-        margin-top: 10px;
-        font-size: 16px;
-        min-height: 44px;
-      }
-      .touch-area {
-        gap: 40px;
+      .content-section {
         padding: 16px;
       }
-      .touch-circle {
-        width: 110px;
-        height: 110px;
+      .instruction {
+        font-size: 16px;
       }
-      .finger-icon {
-        width: 36px;
-        height: 54px;
+      .description {
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+      .touch-circle {
+        width: 120px;
+        height: 120px;
       }
     }
 
     /* 大きい画面用 */
     @media (min-height: 850px) {
-      .video-container {
-        margin-top: 24px;
-      }
-      .instruction {
-        margin-top: 28px;
-        font-size: 19px;
-      }
-      .healing-message {
-        margin-top: 24px;
-        font-size: 20px;
-      }
       .touch-circle {
-        width: 140px;
-        height: 140px;
+        width: 160px;
+        height: 160px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="video-container">
-    <video id="healingVideo" playsinline>
-      <!-- 動画ファイルをここに設定 -->
+  <div class="video-section">
+    <video id="healingVideo" playsinline loop>
       <source src="healing.mp4" type="video/mp4">
-      <!-- サンプル動画（ネットワーク接続時） -->
     </video>
+
+    <div class="healing-message" id="healingMessage"></div>
+
+    <div class="timer-bar">
+      <div class="timer" id="timer">00:00/3:45</div>
+      <button class="sound-btn" id="soundBtn">
+        <svg viewBox="0 0 24 24" id="soundIcon">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
-  <p class="instruction" id="instruction">指を置いてください</p>
+  <div class="content-section">
+    <p class="instruction" id="instruction">指の位置を検知できません。</p>
+    <p class="description">表示されるイラストのように<br>円の中に指を置いてください。</p>
 
-  <div class="healing-message" id="healingMessage"></div>
-
-  <div class="touch-area" id="touchArea">
-    <div class="touch-circle" id="leftCircle">
-      <div class="finger-icon">
-        <svg viewBox="0 0 24 36" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 0C7.58 0 4 3.58 4 8v14c0 7.73 6.27 14 14 14h2c1.1 0 2-.9 2-2V8c0-4.42-3.58-8-8-8h-2zm0 2h2c3.31 0 6 2.69 6 6v26h-1c-6.62 0-12-5.38-12-12V8c0-3.31 2.69-6 6-6z"/>
-          <ellipse cx="12" cy="8" rx="4" ry="5" opacity="0.3"/>
+    <div class="touch-area" id="touchArea">
+      <div class="touch-circle" id="leftCircle">
+        <svg class="thumb-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="skinGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#f5d6c6"/>
+              <stop offset="50%" style="stop-color:#e8c4b0"/>
+              <stop offset="100%" style="stop-color:#d4a889"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="50" cy="85" rx="45" ry="55" fill="url(#skinGradient1)"/>
+          <ellipse cx="50" cy="25" rx="32" ry="22" fill="#f0d0c0" opacity="0.5"/>
+          <path d="M25 60 Q50 55 75 60" stroke="#d4a889" stroke-width="1" fill="none" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="touch-circle" id="rightCircle">
+        <svg class="thumb-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="skinGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#f5d6c6"/>
+              <stop offset="50%" style="stop-color:#e8c4b0"/>
+              <stop offset="100%" style="stop-color:#d4a889"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="50" cy="85" rx="45" ry="55" fill="url(#skinGradient2)"/>
+          <ellipse cx="50" cy="25" rx="32" ry="22" fill="#f0d0c0" opacity="0.5"/>
+          <path d="M25 60 Q50 55 75 60" stroke="#d4a889" stroke-width="1" fill="none" opacity="0.4"/>
         </svg>
       </div>
     </div>
-    <div class="touch-circle" id="rightCircle">
-      <div class="finger-icon">
-        <svg viewBox="0 0 24 36" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 0C7.58 0 4 3.58 4 8v14c0 7.73 6.27 14 14 14h2c1.1 0 2-.9 2-2V8c0-4.42-3.58-8-8-8h-2zm0 2h2c3.31 0 6 2.69 6 6v26h-1c-6.62 0-12-5.38-12-12V8c0-3.31 2.69-6 6-6z"/>
-          <ellipse cx="12" cy="8" rx="4" ry="5" opacity="0.3"/>
-        </svg>
-      </div>
-    </div>
   </div>
+
+  <div class="footer">© 2025 Healing Touch</div>
 
   <script>
     const video = document.getElementById('healingVideo');
@@ -216,6 +303,9 @@
     const touchArea = document.getElementById('touchArea');
     const leftCircle = document.getElementById('leftCircle');
     const rightCircle = document.getElementById('rightCircle');
+    const timer = document.getElementById('timer');
+    const soundBtn = document.getElementById('soundBtn');
+    const soundIcon = document.getElementById('soundIcon');
 
     const healingMessages = [
       "深呼吸をして、心を落ち着けましょう",
@@ -231,9 +321,33 @@
     ];
 
     let isPlaying = false;
+    let isMuted = false;
     let messageInterval = null;
     let currentMessageIndex = 0;
-    let activeTouches = new Set();
+    let startTime = 0;
+    let timerInterval = null;
+    const totalDuration = 225; // 3:45 in seconds
+
+    // タイマー更新
+    function updateTimer() {
+      if (!isPlaying) return;
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const mins = Math.floor(elapsed / 60);
+      const secs = elapsed % 60;
+      const totalMins = Math.floor(totalDuration / 60);
+      const totalSecs = totalDuration % 60;
+      timer.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}/${totalMins}:${String(totalSecs).padStart(2, '0')}`;
+    }
+
+    // 音声切り替え
+    soundBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isMuted = !isMuted;
+      video.muted = isMuted;
+      soundIcon.innerHTML = isMuted
+        ? '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
+        : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+    });
 
     // タッチ位置が円の中にあるかチェック
     function isInsideCircle(touch, circle) {
@@ -241,12 +355,10 @@
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const radius = rect.width / 2;
-
       const distance = Math.sqrt(
         Math.pow(touch.clientX - centerX, 2) +
         Math.pow(touch.clientY - centerY, 2)
       );
-
       return distance <= radius;
     }
 
@@ -256,12 +368,8 @@
       let rightTouched = false;
 
       for (let touch of touches) {
-        if (isInsideCircle(touch, leftCircle)) {
-          leftTouched = true;
-        }
-        if (isInsideCircle(touch, rightCircle)) {
-          rightTouched = true;
-        }
+        if (isInsideCircle(touch, leftCircle)) leftTouched = true;
+        if (isInsideCircle(touch, rightCircle)) rightTouched = true;
       }
 
       leftCircle.classList.toggle('pressed', leftTouched);
@@ -282,10 +390,10 @@
       instruction.textContent = 'ヒーリング中...';
       instruction.classList.add('active');
 
-      // 最初のメッセージを表示
-      showMessage();
+      if (startTime === 0) startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
 
-      // 10秒ごとにメッセージを切り替え
+      showMessage();
       messageInterval = setInterval(() => {
         currentMessageIndex = (currentMessageIndex + 1) % healingMessages.length;
         showMessage();
@@ -295,7 +403,7 @@
     function pauseHealing() {
       isPlaying = false;
       video.pause();
-      instruction.textContent = '指を置いてください';
+      instruction.textContent = '指の位置を検知できません。';
       instruction.classList.remove('active');
 
       healingMessage.classList.remove('visible');
@@ -303,6 +411,10 @@
       if (messageInterval) {
         clearInterval(messageInterval);
         messageInterval = null;
+      }
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
       }
     }
 
@@ -335,12 +447,12 @@
       updateTouchState(e.touches);
     }, { passive: false });
 
-    // 動画ループ
-    video.addEventListener('ended', () => {
-      video.currentTime = 0;
-      if (isPlaying) {
-        video.play();
-      }
+    // 動画メタデータ読み込み時
+    video.addEventListener('loadedmetadata', () => {
+      const duration = video.duration || totalDuration;
+      const mins = Math.floor(duration / 60);
+      const secs = Math.floor(duration % 60);
+      timer.textContent = `00:00/${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     });
   </script>
 </body>
