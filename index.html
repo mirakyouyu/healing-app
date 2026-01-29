@@ -159,9 +159,7 @@
       border-radius: 50%;
       background: #faf8f3;
       border: 2px solid #333;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
+      position: relative;
       overflow: hidden;
       transition: all 0.2s ease;
     }
@@ -172,13 +170,23 @@
     }
 
     .thumb-icon {
-      width: 80%;
-      height: 75%;
-      opacity: 0.6;
+      position: absolute;
+      bottom: -20px;
+      width: 100%;
+      height: 90%;
+      opacity: 0.7;
+    }
+
+    .thumb-icon.left {
+      left: -25px;
+    }
+
+    .thumb-icon.right {
+      right: -25px;
     }
 
     .touch-circle.pressed .thumb-icon {
-      opacity: 0.3;
+      opacity: 0.35;
     }
 
     .footer {
@@ -264,31 +272,65 @@
 
     <div class="touch-area" id="touchArea">
       <div class="touch-circle" id="leftCircle">
-        <svg class="thumb-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <svg class="thumb-icon left" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="skinGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#f5d6c6"/>
-              <stop offset="50%" style="stop-color:#e8c4b0"/>
-              <stop offset="100%" style="stop-color:#d4a889"/>
+            <linearGradient id="skinL1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#f7e0d2"/>
+              <stop offset="40%" style="stop-color:#f0d0be"/>
+              <stop offset="100%" style="stop-color:#e5c4ac"/>
+            </linearGradient>
+            <linearGradient id="skinL2" x1="0%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" style="stop-color:#fae8dc"/>
+              <stop offset="100%" style="stop-color:#f0d5c5"/>
             </linearGradient>
           </defs>
-          <ellipse cx="50" cy="85" rx="45" ry="55" fill="url(#skinGradient1)"/>
-          <ellipse cx="50" cy="25" rx="32" ry="22" fill="#f0d0c0" opacity="0.5"/>
-          <path d="M25 60 Q50 55 75 60" stroke="#d4a889" stroke-width="1" fill="none" opacity="0.4"/>
+          <!-- 親指本体（左下から斜めに） -->
+          <path d="M-10 180
+                   Q 0 140, 25 100
+                   Q 40 70, 55 45
+                   Q 65 25, 75 15
+                   Q 85 5, 95 10
+                   Q 110 20, 105 45
+                   Q 100 70, 90 100
+                   Q 80 130, 75 160
+                   Q 70 180, 50 190
+                   Z"
+                fill="url(#skinL1)"/>
+          <!-- ハイライト -->
+          <ellipse cx="70" cy="50" rx="18" ry="25" fill="url(#skinL2)" opacity="0.6"/>
+          <!-- 関節の影 -->
+          <path d="M35 95 Q55 88 80 95" stroke="#dbb89e" stroke-width="2" fill="none" opacity="0.3"/>
         </svg>
       </div>
       <div class="touch-circle" id="rightCircle">
-        <svg class="thumb-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <svg class="thumb-icon right" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="skinGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#f5d6c6"/>
-              <stop offset="50%" style="stop-color:#e8c4b0"/>
-              <stop offset="100%" style="stop-color:#d4a889"/>
+            <linearGradient id="skinR1" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#f7e0d2"/>
+              <stop offset="40%" style="stop-color:#f0d0be"/>
+              <stop offset="100%" style="stop-color:#e5c4ac"/>
+            </linearGradient>
+            <linearGradient id="skinR2" x1="100%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" style="stop-color:#fae8dc"/>
+              <stop offset="100%" style="stop-color:#f0d5c5"/>
             </linearGradient>
           </defs>
-          <ellipse cx="50" cy="85" rx="45" ry="55" fill="url(#skinGradient2)"/>
-          <ellipse cx="50" cy="25" rx="32" ry="22" fill="#f0d0c0" opacity="0.5"/>
-          <path d="M25 60 Q50 55 75 60" stroke="#d4a889" stroke-width="1" fill="none" opacity="0.4"/>
+          <!-- 親指本体（右下から斜めに） -->
+          <path d="M130 180
+                   Q 120 140, 95 100
+                   Q 80 70, 65 45
+                   Q 55 25, 45 15
+                   Q 35 5, 25 10
+                   Q 10 20, 15 45
+                   Q 20 70, 30 100
+                   Q 40 130, 45 160
+                   Q 50 180, 70 190
+                   Z"
+                fill="url(#skinR1)"/>
+          <!-- ハイライト -->
+          <ellipse cx="50" cy="50" rx="18" ry="25" fill="url(#skinR2)" opacity="0.6"/>
+          <!-- 関節の影 -->
+          <path d="M40 95 Q65 88 85 95" stroke="#dbb89e" stroke-width="2" fill="none" opacity="0.3"/>
         </svg>
       </div>
     </div>
