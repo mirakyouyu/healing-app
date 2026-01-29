@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Healing Touch</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    .video-container {
+      width: calc(100% - 32px);
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .instruction {
+      margin-top: 20px;
+      font-size: 17px;
+      color: rgba(255, 255, 255, 0.7);
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .instruction.active {
+      color: #4ade80;
+    }
+
+    .healing-message {
+      margin-top: 16px;
+      font-size: 18px;
+      font-weight: 300;
+      text-align: center;
+      padding: 0 24px;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      line-height: 1.6;
+    }
+
+    .healing-message.visible {
+      opacity: 1;
+    }
+
+    .touch-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      width: 100%;
+      padding: 20px;
+      min-height: 200px;
+    }
+
+    .touch-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 3px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .touch-circle.pressed {
+      background: rgba(74, 222, 128, 0.25);
+      border-color: #4ade80;
+      transform: scale(0.92);
+      box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+    }
+
+    .finger-icon {
+      width: 44px;
+      height: 66px;
+      opacity: 0.25;
+    }
+
+    .finger-icon svg {
+      width: 100%;
+      height: 100%;
+      fill: rgba(255, 255, 255, 0.6);
+    }
+
+    .touch-circle.pressed .finger-icon {
+      opacity: 0.1;
+    }
+
+    /* 小さい画面用 */
+    @media (max-height: 700px) {
+      .video-container {
+        margin-top: 10px;
+      }
+      .instruction {
+        margin-top: 14px;
+        font-size: 15px;
+      }
+      .healing-message {
+        margin-top: 10px;
+        font-size: 16px;
+        min-height: 44px;
+      }
+      .touch-area {
+        gap: 40px;
+        padding: 16px;
+      }
+      .touch-circle {
+        width: 110px;
+        height: 110px;
+      }
+      .finger-icon {
+        width: 36px;
+        height: 54px;
+      }
+    }
+
+    /* 大きい画面用 */
+    @media (min-height: 850px) {
+      .video-container {
+        margin-top: 24px;
+      }
+      .instruction {
+        margin-top: 28px;
+        font-size: 19px;
+      }
+      .healing-message {
+        margin-top: 24px;
+        font-size: 20px;
+      }
+      .touch-circle {
+        width: 140px;
+        height: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <video id="healingVideo" playsinline>
+      <!-- 動画ファイルをここに設定 -->
+      <source src="healing.mp4" type="video/mp4">
+      <!-- サンプル動画（ネットワーク接続時） -->
+    </video>
+  </div>
+
+  <p class="instruction" id="instruction">指を置いてください</p>
+
+  <div class="healing-message" id="healingMessage"></div>
+
+  <div class="touch-area" id="touchArea">
+    <div class="touch-circle" id="leftCircle">
+      <div class="finger-icon">
+        <svg viewBox="0 0 24 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C7.58 0 4 3.58 4 8v14c0 7.73 6.27 14 14 14h2c1.1 0 2-.9 2-2V8c0-4.42-3.58-8-8-8h-2zm0 2h2c3.31 0 6 2.69 6 6v26h-1c-6.62 0-12-5.38-12-12V8c0-3.31 2.69-6 6-6z"/>
+          <ellipse cx="12" cy="8" rx="4" ry="5" opacity="0.3"/>
+        </svg>
+      </div>
+    </div>
+    <div class="touch-circle" id="rightCircle">
+      <div class="finger-icon">
+        <svg viewBox="0 0 24 36" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C7.58 0 4 3.58 4 8v14c0 7.73 6.27 14 14 14h2c1.1 0 2-.9 2-2V8c0-4.42-3.58-8-8-8h-2zm0 2h2c3.31 0 6 2.69 6 6v26h-1c-6.62 0-12-5.38-12-12V8c0-3.31 2.69-6 6-6z"/>
+          <ellipse cx="12" cy="8" rx="4" ry="5" opacity="0.3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('healingVideo');
+    const instruction = document.getElementById('instruction');
+    const healingMessage = document.getElementById('healingMessage');
+    const touchArea = document.getElementById('touchArea');
+    const leftCircle = document.getElementById('leftCircle');
+    const rightCircle = document.getElementById('rightCircle');
+
+    const healingMessages = [
+      "深呼吸をして、心を落ち着けましょう",
+      "今この瞬間に意識を集中してください",
+      "あなたは十分に頑張っています",
+      "ゆっくりと、自分のペースで",
+      "心と体をリラックスさせましょう",
+      "今日も一日、お疲れさまでした",
+      "自分を大切にする時間です",
+      "穏やかな気持ちで満たされていきます",
+      "すべてはうまくいっています",
+      "この静かな時間を楽しんでください"
+    ];
+
+    let isPlaying = false;
+    let messageInterval = null;
+    let currentMessageIndex = 0;
+    let activeTouches = new Set();
+
+    // タッチ位置が円の中にあるかチェック
+    function isInsideCircle(touch, circle) {
+      const rect = circle.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const radius = rect.width / 2;
+
+      const distance = Math.sqrt(
+        Math.pow(touch.clientX - centerX, 2) +
+        Math.pow(touch.clientY - centerY, 2)
+      );
+
+      return distance <= radius;
+    }
+
+    // タッチ状態を更新
+    function updateTouchState(touches) {
+      let leftTouched = false;
+      let rightTouched = false;
+
+      for (let touch of touches) {
+        if (isInsideCircle(touch, leftCircle)) {
+          leftTouched = true;
+        }
+        if (isInsideCircle(touch, rightCircle)) {
+          rightTouched = true;
+        }
+      }
+
+      leftCircle.classList.toggle('pressed', leftTouched);
+      rightCircle.classList.toggle('pressed', rightTouched);
+
+      const bothPressed = leftTouched && rightTouched;
+
+      if (bothPressed && !isPlaying) {
+        startHealing();
+      } else if (!bothPressed && isPlaying) {
+        pauseHealing();
+      }
+    }
+
+    function startHealing() {
+      isPlaying = true;
+      video.play().catch(() => {});
+      instruction.textContent = 'ヒーリング中...';
+      instruction.classList.add('active');
+
+      // 最初のメッセージを表示
+      showMessage();
+
+      // 10秒ごとにメッセージを切り替え
+      messageInterval = setInterval(() => {
+        currentMessageIndex = (currentMessageIndex + 1) % healingMessages.length;
+        showMessage();
+      }, 10000);
+    }
+
+    function pauseHealing() {
+      isPlaying = false;
+      video.pause();
+      instruction.textContent = '指を置いてください';
+      instruction.classList.remove('active');
+
+      healingMessage.classList.remove('visible');
+
+      if (messageInterval) {
+        clearInterval(messageInterval);
+        messageInterval = null;
+      }
+    }
+
+    function showMessage() {
+      healingMessage.classList.remove('visible');
+      setTimeout(() => {
+        healingMessage.textContent = healingMessages[currentMessageIndex];
+        healingMessage.classList.add('visible');
+      }, 300);
+    }
+
+    // タッチイベント
+    touchArea.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      updateTouchState(e.touches);
+    }, { passive: false });
+
+    touchArea.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      updateTouchState(e.touches);
+    }, { passive: false });
+
+    touchArea.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      updateTouchState(e.touches);
+    }, { passive: false });
+
+    touchArea.addEventListener('touchcancel', (e) => {
+      e.preventDefault();
+      updateTouchState(e.touches);
+    }, { passive: false });
+
+    // 動画ループ
+    video.addEventListener('ended', () => {
+      video.currentTime = 0;
+      if (isPlaying) {
+        video.play();
+      }
+    });
+  </script>
+</body>
+</html>
